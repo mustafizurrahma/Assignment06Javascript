@@ -17,16 +17,24 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 const showImages = (images) => {
-  imagesArea.style.display = 'block';
-  gallery.innerHTML = '';
-  // show gallery title
-  galleryHeader.style.display = 'flex';
-  images.forEach(image => {
-    let div = document.createElement('div');
-    div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
-  })
+  if (searchInput.value === '' || images.length === 0) {
+    if (searchInput.value === '') {
+      alert('আপনি কোন কিছু না লিখে সার্চ করতে পারেন না')
+    } else {
+      alert('আপনি যে ইমেজ সার্চ করছেন ওই ইমেজ পাওয়া যায় নাই, অন্য ইমেজ সার্চ করে বের করুন। ')
+    }
+  } else {
+    imagesArea.style.display = 'block';
+    gallery.innerHTML = '';
+    // show gallery title
+    galleryHeader.style.display = 'flex';
+    images.forEach(image => {
+      let div = document.createElement('div');
+      div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
+      div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
+      gallery.appendChild(div)
+    })
+  }
 }
 
 const getImages = (query) => {
@@ -40,14 +48,16 @@ let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
   element.classList.add('added');
- 
+
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
-    alert('আপনি এটা অলরেডি অ্যাড করেছেন। আপনি আর এটি এই মুহূর্তে অ্যাড করতে পারবেন না. !')
+    sliders.splice(item, 1);
   }
 }
+
+
 
 var timer
 const createSlider = () => {
@@ -71,27 +81,26 @@ const createSlider = () => {
   imagesArea.style.display = 'none';
   const duration = document.getElementById('duration').value || 1000;
 
- if (duration > 0) {
-  sliders.forEach(slide => {
-    let item = document.createElement('div')
-    item.className = "slider-item";
-    item.innerHTML = `<img class="w-100"
+  if (duration > 0) {
+    sliders.forEach(slide => {
+      let item = document.createElement('div')
+      item.className = "slider-item";
+      item.innerHTML = `<img class="w-100"
     src="${slide}"
     alt="">`;
-    sliderContainer.appendChild(item)
-  })
+      sliderContainer.appendChild(item)
+    })
 
-  changeSlide(0)
-  timer = setInterval(function () {
-    slideIndex++;
-    changeSlide(slideIndex);
-  }, duration);
+    changeSlide(0)
+    timer = setInterval(function () {
+      slideIndex++;
+      changeSlide(slideIndex);
+    }, duration);
 
- }
-  else {
+  } else {
     alert('আপনি নেগেটিভ ভ্যালু বা - চিহ্ন ব্যবহার করতে পারবেন না. আপনাকে পজেটিভ সংখ্যা ব্যবহার করতে হবে.');
     document.querySelector('.main').style.display = 'none';
-}
+  }
 }
 
 // change slider index 
@@ -133,8 +142,8 @@ sliderBtn.addEventListener('click', function () {
 })
 
 // Press Enter Search AutoMatic
-searchInput.addEventListener("keypress", function(event){
-    if (event.key === 'Enter'){ 
-      searchBtn.click();
-    }    
+searchInput.addEventListener("keypress", function (event) {
+  if (event.key === 'Enter') {
+    searchBtn.click();
+  }
 });
